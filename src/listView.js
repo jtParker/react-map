@@ -1,26 +1,44 @@
 import React, {Component} from 'react'
 
-class listView extends Component {
-  let searchedPlaces = this.props
+class ListView extends Component {
+
+  state = {
+    listData: {}
+  }
+
+  placeClick = (place) => {
+    const id = place.fsqId
+    this.props.getData(id)
+  }
+
 
   render() {
-    <div className="listView-cont">
+    const searchedPlaces = this.props.places
+    const squareData = this.props.fsqData
+    return(
 
-      searchedPlaces.map((place, index) => {
-        <ul>
-          <li>
-            <h3></h3>
+    <div className="listView-cont">
+      <ul>
+        {searchedPlaces.map((place, index) => (
+          <li key={index} onClick={(e) => {this.placeClick(place)}}>
+            <h3>{place.name}</h3>
+            { this.props.dataLoaded ?
+              <ul>
+                <li>{squareData.venue.contact.formattedPhone}</li>
+                <li>{squareData.venue.contact.formattedPhone}</li>
+              </ul>
+            : null }
               <ul>
                 <li></li>
               </ul>
           </li>
-        </ul>
-
-      })
+        ))}
+      </ul>
 
     </div>
+    )
   }
 
 }
 
-export default listView
+export default ListView

@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import {Map, InfoWindow, Marker, GoogleApiWrapper} from 'google-maps-react'
+import ListView from './ListView'
 import escapeRegExp from 'escape-string-regexp'
 import poweredByFsq from './powered-by-foursquare-blue.png'
+import burger from './burger.png'
 
 class MapContainer extends Component {
 
@@ -42,7 +44,8 @@ class MapContainer extends Component {
     showingInfoWindow: false,
     activeMarker: {},
     selectedPlace: {},
-    fsqLoaded: false
+    fsqLoaded: false,
+    isOpen: false
   }
 
   updateQuery = (query) => {
@@ -50,8 +53,8 @@ class MapContainer extends Component {
   }
 
   getData = (loc) => {
-
-    const id = loc.fsq
+    console.log(loc)
+    const id = loc
     let url = 'https://api.foursquare.com/v2/venues/' + id + '?client_secret=L53CQE4JEBEZ5MFFFS4R3ZQZ3RSHMBRLUF0CCAHI4OQN4ELB&client_id=J5ANJA3OTXFY4BC4ITIRPLYZJ4EVZKBT5S0FI0ESGPEQXFOI&v=20181023'
     fetch(url).then(results => {
       return results.json()
@@ -61,14 +64,13 @@ class MapContainer extends Component {
         fsqLoaded: true,
         fsqData: fsqResults
       })
-      console.log(this.state)
     }).catch(err => {
       console.log(err)
     })
   }
 
   onMarkerClick = (props, marker, e) => {
-      this.getData(props)
+      this.getData(props.fsq)
       this.setState({
         selectedPlace: props,
         activeMarker: marker,
@@ -84,13 +86,20 @@ class MapContainer extends Component {
     })
   }
 
+  openMenu = () => {
+    if (!this.state.isOpen) {
+      this.setState({isOpen: true})
+    } else {
+      this.setState({isOpen: false})
+    }
+  }
+
   render() {
     let searchedPlaces
     const places = this.state.places
     const query = this.state.query
     const squareData = this.state.fsqData
     const loaded = this.state.fsqLoaded
-    console.log(squareData)
 
     if (query) {
       const match = new RegExp(escapeRegExp(query), 'i')
@@ -102,50 +111,56 @@ class MapContainer extends Component {
     return (
       <div className="container">
         <div className="search-container">
+        <img className="burger-menu" onClick={this.openMenu} src={burger} alt="hambuger menu"/>
           <input
               className='search-places'
               type='text'
-              placeholder='Click To Search Places'
+              placeholder='Search Places'
               value={query}
               onChange={(event) => this.updateQuery(event.target.value)}
             />
         </div>
+        <div className="inner-container">
+            <div className="list-container">
+              { this.state.isOpen ? <ListView places={searchedPlaces} fsqData={this.state.fsqData} dataLoaded={this.state.fsqLoaded} getData={this.getData}></ListView> : null }
+            </div>
 
-        <div className="map-container">
-        <Map google={this.props.google}
-             zoom={14}
-             onClick={this.onMapClicked}
-            initialCenter={{lat: 40.758839,
-                            lng: -111.888028}}
-          >
-            {searchedPlaces.map((place, index) => (
-              <Marker
-                key={index}
-                title={place.name}
-                name={place.name}
-                position={place.position}
-                fsq={place.fsqId}
-                onClick={this.onMarkerClick}
-              />
-
-            ))}
-            <InfoWindow
-              marker={this.state.activeMarker}
-              visible={this.state.showingInfoWindow}
+            <div className="map-container">
+            <Map google={this.props.google}
+                 zoom={14}
+                 onClick={this.onMapClicked}
+                initialCenter={{lat: 40.758839,
+                                lng: -111.888028}}
               >
-                <div className="info-window">
-                  <h1>{this.state.selectedPlace.name}</h1>
-                  {loaded &&
-                    <ul>
-                      <li>{squareData.venue.contact.formattedPhone}</li>
-                      <li style={{ color: '#' + squareData.venue.ratingColor}}>Rating: {squareData.venue.rating}</li>
-                      <li><img className="fsq-logo" src={poweredByFsq} alt="Powered by Foursquare"/></li>
-                    </ul>
-                  }
-                </div>
-            </InfoWindow>
-        </Map>
-      </div>
+                {searchedPlaces.map((place, index) => (
+                  <Marker
+                    key={index}
+                    title={place.name}
+                    name={place.name}
+                    position={place.position}
+                    fsq={place.fsqId}
+                    onClick={this.onMarkerClick}
+                  />
+
+                ))}
+                <InfoWindow
+                  marker={this.state.activeMarker}
+                  visible={this.state.showingInfoWindow}
+                  >
+                    <div className="info-window">
+                      <h1>{this.state.selectedPlace.name}</h1>
+                      {loaded &&
+                        <ul>
+                          <li>{squareData.venue.contact.formattedPhone}</li>
+                          <li style={{ color: '#' + squareData.venue.ratingColor}}>Rating: {squareData.venue.rating}</li>
+                          <li><img className="fsq-logo" src={poweredByFsq} alt="Powered by Foursquare"/></li>
+                        </ul>
+                      }
+                    </div>
+                </InfoWindow>
+            </Map>
+          </div>
+        </div>
     </div>
     )
   }
