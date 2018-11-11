@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import {Map, InfoWindow, Marker, GoogleApiWrapper} from 'google-maps-react'
 import ListView from './ListView'
 import escapeRegExp from 'escape-string-regexp'
-import poweredByFsq from './powered-by-foursquare-blue.png'
 import burger from './burger.png'
 
 class MapContainer extends Component {
@@ -12,55 +11,49 @@ class MapContainer extends Component {
         {
           name: 'Clark Planetarium',
           position: {lat: 40.766965, lng: -111.902901},
-          fsqId: '4ad4f28ff964a52071fd20e3',
-          fsqData: {}
+          data: {}
         },
         {
           name: 'Vivint Smart Home Arena',
           position: {lat: 40.768279, lng: -111.901112},
-          fsqId: '4b15506df964a5208db023e3',
-          fsqData: {}
+          data: {}
         },
         {
-          name: 'Red Iguana',
-          position: {lat: 40.771896, lng: -111.912514},
-          fsqId: '4adf49fff964a5201f7921e3',
-          fsqData: {}
+          name: 'Hogle Zoo',
+          position: {lat: 40.7502, lng: -111.8141},
+          data: {}
         },
         {
           name: 'Liberty Park',
           position: {lat: 40.744719, lng: -111.875414},
-          fsqId: '4ad4f28ff964a52064fd20e3',
-          fsqData: {}
+          data: {}
         },
         {
           name: 'Trolley Square',
           position: {lat: 40.757014, lng: -111.872223},
-          fsqId: '4ad4f291f964a52027fe20e3',
-          fsqData: {}
+          data: {}
         }
       ],
       query : '',
       showingInfoWindow: false,
       activeMarker: {},
       selectedPlace: {},
-      fsqLoaded: false,
+      loaded: false,
       isOpen: false
     }
-  
 
   updateQuery = (query) => {
     this.setState({ query: query.trim() })
   }
 
   getClarkData = () => {
-    let url = 'https://api.foursquare.com/v2/venues/4ad4f28ff964a52071fd20e3?client_secret=L53CQE4JEBEZ5MFFFS4R3ZQZ3RSHMBRLUF0CCAHI4OQN4ELB&client_id=J5ANJA3OTXFY4BC4ITIRPLYZJ4EVZKBT5S0FI0ESGPEQXFOI&v=20181023'
+    let url = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&origin=*&explaintext&redirects=1&titles=Clark_Planetarium'
     fetch(url).then(results => {
       return results.json()
     }).then(data => {
-      let fsqResults = data.response
+      let wikiResults = data.response
       let copiedPlaces = JSON.parse(JSON.stringify(this.state.places))
-      copiedPlaces[0].fsqData = fsqResults
+      copiedPlaces[0].data = wikiResults
       this.setState({
         places: copiedPlaces
       })
@@ -70,13 +63,13 @@ class MapContainer extends Component {
   }
 
   getVivintData = () => {
-    let url = 'https://api.foursquare.com/v2/venues/4b15506df964a5208db023e3?client_secret=L53CQE4JEBEZ5MFFFS4R3ZQZ3RSHMBRLUF0CCAHI4OQN4ELB&client_id=J5ANJA3OTXFY4BC4ITIRPLYZJ4EVZKBT5S0FI0ESGPEQXFOI&v=20181023'
+    let url = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&origin=*&explaintext&redirects=1&titles=Vivint_Smart_Home_Arena'
     fetch(url).then(results => {
       return results.json()
     }).then(data => {
-      let fsqResults = data.response
+      let wikiResults = data.response
       let copiedPlaces = JSON.parse(JSON.stringify(this.state.places))
-      copiedPlaces[1].fsqData = fsqResults
+      copiedPlaces[1].data = wikiResults
       this.setState({
         places: copiedPlaces
       })
@@ -85,14 +78,14 @@ class MapContainer extends Component {
     })
   }
 
-  getIguanaData = () => {
-    let url = 'https://api.foursquare.com/v2/venues/4adf49fff964a5201f7921e3?client_secret=L53CQE4JEBEZ5MFFFS4R3ZQZ3RSHMBRLUF0CCAHI4OQN4ELB&client_id=J5ANJA3OTXFY4BC4ITIRPLYZJ4EVZKBT5S0FI0ESGPEQXFOI&v=20181023'
+  getZooData = () => {
+    let url = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&origin=*&explaintext&redirects=1&titles=Hogle_Zoo'
     fetch(url).then(results => {
       return results.json()
     }).then(data => {
-      let fsqResults = data.response
+      let wikiResults = data.response
       let copiedPlaces = JSON.parse(JSON.stringify(this.state.places))
-      copiedPlaces[2].fsqData = fsqResults
+      copiedPlaces[2].data = wikiResults
       this.setState({
         places: copiedPlaces
       })
@@ -102,13 +95,13 @@ class MapContainer extends Component {
   }
 
   getLibertyData = () => {
-    let url = 'https://api.foursquare.com/v2/venues/4ad4f28ff964a52064fd20e3?client_secret=L53CQE4JEBEZ5MFFFS4R3ZQZ3RSHMBRLUF0CCAHI4OQN4ELB&client_id=J5ANJA3OTXFY4BC4ITIRPLYZJ4EVZKBT5S0FI0ESGPEQXFOI&v=20181023'
+    let url = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&origin=*&explaintext&redirects=1&titles=Liberty_Park_(Salt_Lake_City)'
     fetch(url).then(results => {
       return results.json()
     }).then(data => {
-      let fsqResults = data.response
+      let wikiResults = data.response
       let copiedPlaces = JSON.parse(JSON.stringify(this.state.places))
-      copiedPlaces[3].fsqData = fsqResults
+      copiedPlaces[3].data = wikiResults
       this.setState({
         places: copiedPlaces
       })
@@ -118,13 +111,13 @@ class MapContainer extends Component {
   }
 
   getTrolleyData = () => {
-    let url = 'https://api.foursquare.com/v2/venues/4ad4f291f964a52027fe20e3?client_secret=L53CQE4JEBEZ5MFFFS4R3ZQZ3RSHMBRLUF0CCAHI4OQN4ELB&client_id=J5ANJA3OTXFY4BC4ITIRPLYZJ4EVZKBT5S0FI0ESGPEQXFOI&v=20181023'
+    let url = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&origin=*&explaintext&redirects=1&titles=Trolley_Square'
     fetch(url).then(results => {
       return results.json()
     }).then(data => {
-      let fsqResults = data.response
+      let wikiResults = data.response
       let copiedPlaces = JSON.parse(JSON.stringify(this.state.places))
-      copiedPlaces[4].fsqData = fsqResults
+      copiedPlaces[4].data = wikiResults
       this.setState({
         places: copiedPlaces
       })
@@ -137,12 +130,12 @@ class MapContainer extends Component {
     Promise.all([
       this.getClarkData(),
       this.getVivintData(),
-      this.getIguanaData(),
+      this.getZooData(),
       this.getLibertyData(),
       this.getTrolleyData()
     ]).then(() => {
         this.setState({
-          fsqLoaded: true
+          loaded: true
         })
       }
     )
@@ -161,7 +154,7 @@ class MapContainer extends Component {
     this.setState({
       showingInfoWindow: false,
       activeMarker: null,
-      fsqLoaded: false
+      loaded: false
     })
   }
 
@@ -199,7 +192,7 @@ class MapContainer extends Component {
         </div>
         <div className="inner-container">
             <div className="list-container">
-              { this.state.isOpen ? <ListView places={searchedPlaces} fsqData={this.state.fsqData} dataLoaded={this.state.fsqLoaded} getData={this.getData}></ListView> : null }
+              { this.state.isOpen ? <ListView places={searchedPlaces} data={this.state.data} dataLoaded={this.state.loaded} getData={this.getData}></ListView> : null }
             </div>
 
             <div className="map-container">
@@ -216,7 +209,7 @@ class MapContainer extends Component {
                     name={place.name}
                     position={place.position}
                     fsq={place.fsqId}
-                    data={place.fsqData}
+                    data={place.data}
                     onClick={this.onMarkerClick}
                   />
 
@@ -227,13 +220,6 @@ class MapContainer extends Component {
                   >
                     <div className="info-window">
                       <h1>{this.state.selectedPlace.name}</h1>
-                      {this.state.fsqLoaded &&
-                        <ul>
-                          <li>{this.state.selectedPlace.name}</li>
-                          <li>Rating: this.state.selectedPlace.data.venue.rating </li>
-                          <li><img className="fsq-logo" src={poweredByFsq} alt="Powered by Foursquare"/></li>
-                        </ul>
-                      }
                     </div>
                 </InfoWindow>
             </Map>
