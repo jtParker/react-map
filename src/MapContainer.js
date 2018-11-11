@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {Map, InfoWindow, Marker, GoogleApiWrapper} from 'google-maps-react'
-import ListView from './ListView'
+import ListView from './listView.js'
 import escapeRegExp from 'escape-string-regexp'
 import burger from './burger.png'
 
@@ -51,7 +51,7 @@ class MapContainer extends Component {
     fetch(url).then(results => {
       return results.json()
     }).then(data => {
-      let wikiResults = data.response
+      let wikiResults = data.query
       let copiedPlaces = JSON.parse(JSON.stringify(this.state.places))
       copiedPlaces[0].data = wikiResults
       this.setState({
@@ -67,7 +67,7 @@ class MapContainer extends Component {
     fetch(url).then(results => {
       return results.json()
     }).then(data => {
-      let wikiResults = data.response
+      let wikiResults = data.query
       let copiedPlaces = JSON.parse(JSON.stringify(this.state.places))
       copiedPlaces[1].data = wikiResults
       this.setState({
@@ -83,7 +83,7 @@ class MapContainer extends Component {
     fetch(url).then(results => {
       return results.json()
     }).then(data => {
-      let wikiResults = data.response
+      let wikiResults = data.query
       let copiedPlaces = JSON.parse(JSON.stringify(this.state.places))
       copiedPlaces[2].data = wikiResults
       this.setState({
@@ -99,7 +99,7 @@ class MapContainer extends Component {
     fetch(url).then(results => {
       return results.json()
     }).then(data => {
-      let wikiResults = data.response
+      let wikiResults = data.query
       let copiedPlaces = JSON.parse(JSON.stringify(this.state.places))
       copiedPlaces[3].data = wikiResults
       this.setState({
@@ -115,7 +115,7 @@ class MapContainer extends Component {
     fetch(url).then(results => {
       return results.json()
     }).then(data => {
-      let wikiResults = data.response
+      let wikiResults = data.query
       let copiedPlaces = JSON.parse(JSON.stringify(this.state.places))
       copiedPlaces[4].data = wikiResults
       this.setState({

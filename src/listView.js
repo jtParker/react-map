@@ -7,14 +7,12 @@ class ListView extends Component {
   }
 
   placeClick = (place) => {
-    const id = place.fsqId
-    this.props.getData(id)
   }
 
 
   render() {
+    debugger
     const searchedPlaces = this.props.places
-    const squareData = this.props.fsqData
     return(
 
     <div className="listView-cont">
@@ -24,8 +22,8 @@ class ListView extends Component {
             <h3>{place.name}</h3>
             { this.props.dataLoaded ?
               <ul>
-                <li>{squareData.venue.contact.formattedPhone}</li>
-                <li>{squareData.venue.contact.formattedPhone}</li>
+                <li>place.data.pages</li>
+                <li></li>
               </ul>
             : null }
               <ul>
