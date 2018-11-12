@@ -38,7 +38,6 @@ class MapContainer extends Component {
       showingInfoWindow: false,
       activeMarker: {},
       selectedPlace: {},
-      listMarker:'',
       loaded: false,
       isOpen: false
     }
@@ -163,8 +162,7 @@ class MapContainer extends Component {
   onMapClicked = (props) => {
     this.setState({
       showingInfoWindow: false,
-      activeMarker: null,
-      loaded: false
+      activeMarker: null
     })
   }
 
@@ -180,7 +178,6 @@ class MapContainer extends Component {
     let searchedPlaces
     const places = this.state.places
     const query = this.state.query
-    const listMarker = this.state.listMarker
 
     if (query) {
       const match = new RegExp(escapeRegExp(query), 'i')
@@ -203,7 +200,7 @@ class MapContainer extends Component {
         </div>
         <div className="inner-container">
             <div className="list-container">
-              { this.state.isOpen ? <ListView places={searchedPlaces} data={this.state.data} dataLoaded={this.state.loaded} animateMarker={this.animateMarker}></ListView> : null }
+              { this.state.isOpen ? <ListView places={searchedPlaces} data={this.state.data} dataLoaded={this.state.loaded} animateMarker={this.updateQuery}></ListView> : null }
             </div>
 
             <div className="map-container" >
@@ -216,7 +213,7 @@ class MapContainer extends Component {
                 {searchedPlaces.map((place, index) => (
 
                   <Marker
-                    animation={place.name === listMarker ? this.props.google.maps.Animation.DROP : null}
+                    animation={this.props.google.maps.Animation.DROP}
                     key={index}
                     title={place.name}
                     name={place.name}
