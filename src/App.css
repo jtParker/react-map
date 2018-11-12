@@ -32,15 +32,16 @@ ul {
 .list-container {
   position: absolute;
   color: #fff;
+  font-size: 13px;
   background: rgba(114,114,113, .6);
   border-right: 2px solid #000;
   border-bottom: 2px solid #000;
   border-radius: 3px;
-  width: 20%;
+  width: 30%;
   z-index: 10;
 }
 
-.list-container li:hover {
+.list-container li h3:hover {
   cursor: pointer;
   transform: scale(1.1);
 }
@@ -55,11 +56,6 @@ ul {
   margin: 0 auto;
 }
 
-.fsq-logo {
-  height: 10px;
-  margin-top: 20px;
-}
-
 .listView-cont {
   height: 100%;
 }
@@ -71,4 +67,10 @@ ul {
 
 .burger-menu:hover {
   cursor: pointer;
+}
+
+@media screen and (max-width: 800px ) {
+  .list-container {
+    width: 100%;
+  }
 }

@@ -7,22 +7,21 @@ class ListView extends Component {
   }
 
   placeClick = (place) => {
+    this.props.animateMarker(place)
   }
 
-
   render() {
-    debugger
     const searchedPlaces = this.props.places
     return(
 
     <div className="listView-cont">
       <ul>
         {searchedPlaces.map((place, index) => (
-          <li key={index} onClick={(e) => {this.placeClick(place)}}>
+          <li key={index} onClick={() => this.placeClick(place.name)}>
             <h3>{place.name}</h3>
             { this.props.dataLoaded ?
               <ul>
-                <li>place.data.pages</li>
+                <li><em>Wiki: </em>{place.data.extract}</li>
                 <li></li>
               </ul>
             : null }

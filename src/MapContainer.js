@@ -38,6 +38,7 @@ class MapContainer extends Component {
       showingInfoWindow: false,
       activeMarker: {},
       selectedPlace: {},
+      listMarker:'',
       loaded: false,
       isOpen: false
     }
@@ -47,11 +48,11 @@ class MapContainer extends Component {
   }
 
   getClarkData = () => {
-    let url = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&origin=*&explaintext&redirects=1&titles=Clark_Planetarium'
+    let url = 'https://en.wikipedia.org/api/rest_v1/page/summary/Clark_Planetarium'
     fetch(url).then(results => {
       return results.json()
     }).then(data => {
-      let wikiResults = data.query
+      let wikiResults = data
       let copiedPlaces = JSON.parse(JSON.stringify(this.state.places))
       copiedPlaces[0].data = wikiResults
       this.setState({
@@ -63,11 +64,11 @@ class MapContainer extends Component {
   }
 
   getVivintData = () => {
-    let url = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&origin=*&explaintext&redirects=1&titles=Vivint_Smart_Home_Arena'
+    let url = 'https://en.wikipedia.org/api/rest_v1/page/summary/Vivint_Smart_Home_Arena'
     fetch(url).then(results => {
       return results.json()
     }).then(data => {
-      let wikiResults = data.query
+      let wikiResults = data
       let copiedPlaces = JSON.parse(JSON.stringify(this.state.places))
       copiedPlaces[1].data = wikiResults
       this.setState({
@@ -79,11 +80,11 @@ class MapContainer extends Component {
   }
 
   getZooData = () => {
-    let url = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&origin=*&explaintext&redirects=1&titles=Hogle_Zoo'
+    let url = 'https://en.wikipedia.org/api/rest_v1/page/summary/Hogle_Zoo'
     fetch(url).then(results => {
       return results.json()
     }).then(data => {
-      let wikiResults = data.query
+      let wikiResults = data
       let copiedPlaces = JSON.parse(JSON.stringify(this.state.places))
       copiedPlaces[2].data = wikiResults
       this.setState({
@@ -95,11 +96,11 @@ class MapContainer extends Component {
   }
 
   getLibertyData = () => {
-    let url = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&origin=*&explaintext&redirects=1&titles=Liberty_Park_(Salt_Lake_City)'
+    let url = 'https://en.wikipedia.org/api/rest_v1/page/summary/Liberty_Park_(Salt_Lake_City)'
     fetch(url).then(results => {
       return results.json()
     }).then(data => {
-      let wikiResults = data.query
+      let wikiResults = data
       let copiedPlaces = JSON.parse(JSON.stringify(this.state.places))
       copiedPlaces[3].data = wikiResults
       this.setState({
@@ -111,11 +112,11 @@ class MapContainer extends Component {
   }
 
   getTrolleyData = () => {
-    let url = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&origin=*&explaintext&redirects=1&titles=Trolley_Square'
+    let url = 'https://en.wikipedia.org/api/rest_v1/page/summary/Trolley_Square'
     fetch(url).then(results => {
       return results.json()
     }).then(data => {
-      let wikiResults = data.query
+      let wikiResults = data
       let copiedPlaces = JSON.parse(JSON.stringify(this.state.places))
       copiedPlaces[4].data = wikiResults
       this.setState({
@@ -141,8 +142,17 @@ class MapContainer extends Component {
     )
   }
 
+  animateMarker = (place) => {
+    this.setState({
+      listMarker: place
+    })
+  }
+
+  resetState = () => {
+    this.setState({state: this.state})
+  }
+
   onMarkerClick = (props, marker, e) => {
-    console.log(props)
       this.setState({
         selectedPlace: props,
         activeMarker: marker,
@@ -170,6 +180,7 @@ class MapContainer extends Component {
     let searchedPlaces
     const places = this.state.places
     const query = this.state.query
+    const listMarker = this.state.listMarker
 
     if (query) {
       const match = new RegExp(escapeRegExp(query), 'i')
@@ -181,7 +192,7 @@ class MapContainer extends Component {
     return (
       <div className="container">
         <div className="search-container">
-        <img className="burger-menu" onClick={this.openMenu} src={burger} alt="hambuger menu"/>
+        <img className="burger-menu" onClick={this.openMenu} src={burger} alt="hamburger menu"/>
           <input
               className='search-places'
               type='text'
@@ -192,18 +203,20 @@ class MapContainer extends Component {
         </div>
         <div className="inner-container">
             <div className="list-container">
-              { this.state.isOpen ? <ListView places={searchedPlaces} data={this.state.data} dataLoaded={this.state.loaded} getData={this.getData}></ListView> : null }
+              { this.state.isOpen ? <ListView places={searchedPlaces} data={this.state.data} dataLoaded={this.state.loaded} animateMarker={this.animateMarker}></ListView> : null }
             </div>
 
-            <div className="map-container">
+            <div className="map-container" >
             <Map google={this.props.google}
-                 zoom={14}
+                 zoom={12}
                  onClick={this.onMapClicked}
                 initialCenter={{lat: 40.758839,
                                 lng: -111.888028}}
               >
                 {searchedPlaces.map((place, index) => (
+
                   <Marker
+                    animation={place.name === listMarker ? this.props.google.maps.Animation.DROP : null}
                     key={index}
                     title={place.name}
                     name={place.name}
@@ -219,7 +232,7 @@ class MapContainer extends Component {
                   visible={this.state.showingInfoWindow}
                   >
                     <div className="info-window">
-                      <h1>{this.state.selectedPlace.name}</h1>
+                      <h2>{this.state.selectedPlace.name}</h2>
                     </div>
                 </InfoWindow>
             </Map>
