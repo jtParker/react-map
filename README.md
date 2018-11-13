@@ -1,3 +1,18 @@
+## FEND Neighborhood Map Project
+
+This is the final project for Udacity's Front End Nanodegree. A neighborhood map displaying some local sites on a map. Built using React, Google Maps, and the Wikipedia API.
+
+## Running the Project
+
+For complete functionality the app needs to run the production version. Use the instructions below to start the app.
+
+- Clone from https://github.com/jtParker/react-map.git
+- Run NPM install
+- Run NPM install -g serve
+- Run NPM -s build
+- Navigate to localhost:5000 in your browser
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
