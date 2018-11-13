@@ -42,9 +42,7 @@ class MapContainer extends Component {
       isOpen: false
     }
 
-  updateQuery = (query) => {
-    this.setState({ query: query.trim() })
-  }
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/> API Methods <\~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \\
 
   getClarkData = () => {
     let url = 'https://en.wikipedia.org/api/rest_v1/page/summary/Clark_Planetarium'
@@ -126,30 +124,23 @@ class MapContainer extends Component {
     })
   }
 
-  componentDidMount() {
-    Promise.all([
-      this.getClarkData(),
-      this.getVivintData(),
-      this.getZooData(),
-      this.getLibertyData(),
-      this.getTrolleyData()
-    ]).then(() => {
-        this.setState({
-          loaded: true
-        })
-      }
-    )
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/> Handle Search Query <\~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \\
+
+  updateQuery = (query) => {
+    this.setState({ query: query.trim() })
   }
 
-  animateMarker = (place) => {
-    this.setState({
-      listMarker: place
-    })
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/> Open the Burger Menu <\~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \\
+
+  openMenu = () => {
+    if (!this.state.isOpen) {
+      this.setState({isOpen: true})
+    } else {
+      this.setState({isOpen: false})
+    }
   }
 
-  resetState = () => {
-    this.setState({state: this.state})
-  }
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/> Click Handlers <\~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \\
 
   onMarkerClick = (props, marker, e) => {
       this.setState({
@@ -166,13 +157,26 @@ class MapContainer extends Component {
     })
   }
 
-  openMenu = () => {
-    if (!this.state.isOpen) {
-      this.setState({isOpen: true})
-    } else {
-      this.setState({isOpen: false})
-    }
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/> Fetch the data! <\~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \\
+
+  componentDidMount() {
+    Promise.all([
+      this.getClarkData(),
+      this.getVivintData(),
+      this.getZooData(),
+      this.getLibertyData(),
+      this.getTrolleyData()
+    ]).then(() => {
+        this.setState({
+          loaded: true
+        })
+      }
+    ).catch(err => {
+      alert("Data failed to load. Error: " + err)
+    })
   }
+
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/> Let it rip! <\~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \\
 
   render() {
     let searchedPlaces
@@ -198,9 +202,9 @@ class MapContainer extends Component {
               onChange={(event) => this.updateQuery(event.target.value)}
             />
         </div>
-        <div className="inner-container">
+        <div role={'application'} className="inner-container">
             <div className="list-container">
-              { this.state.isOpen ? <ListView places={searchedPlaces} data={this.state.data} dataLoaded={this.state.loaded} animateMarker={this.updateQuery}></ListView> : null }
+              { this.state.isOpen ? <ListView places={searchedPlaces} dataLoaded={this.state.loaded} animateMarker={this.updateQuery}></ListView> : null }
             </div>
 
             <div className="map-container" >
@@ -218,8 +222,6 @@ class MapContainer extends Component {
                     title={place.name}
                     name={place.name}
                     position={place.position}
-                    fsq={place.fsqId}
-                    data={place.data}
                     onClick={this.onMarkerClick}
                   />
 
